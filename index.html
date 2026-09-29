@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobo Group of Companies Limited | Billing Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <img class="brand-logo" src="Logo.png" alt="Mobo Group of Companies Limited logo" />
+          <div>
+            <p class="eyebrow">Mobo Group of<br />Companies Limited</p>
+            <h1>Billing Tracker</h1>
+          </div>
+        </div>
+
+        <nav class="nav" aria-label="Main navigation">
+          <button class="nav-link active" data-view="dashboard">Dashboard</button>
+          <button class="nav-link" data-view="records">Records</button>
+          <button class="nav-link" data-view="quotations">Quotations</button>
+          <button class="nav-link" data-view="payments">Receipts</button>
+          <button class="nav-link" data-view="activity-log">Activity log</button>
+        </nav>
+
+        <div class="sidebar-card">
+          <p class="eyebrow">This month</p>
+          <h3 id="sidebar-highlight">K0.00</h3>
+          <span id="sidebar-label">Collected</span>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h2 id="page-title">Dashboard</h2>
+          </div>
+          <button class="primary-button" id="new-record-button">+ New record</button>
+        </header>
+
+        <section class="view active" id="dashboard-view">
+          <div class="stats-grid">
+            <article class="stat-card accent-blue">
+              <p>Total revenue</p>
+              <h3 id="total-revenue">K0.00</h3>
+              <span>Across invoices and receipts</span>
+            </article>
+            <article class="stat-card accent-green">
+              <p>Collected</p>
+              <h3 id="collected-total">K0.00</h3>
+              <span>Paid in full</span>
+            </article>
+            <article class="stat-card accent-orange">
+              <p>Outstanding</p>
+              <h3 id="outstanding-total">K0.00</h3>
+              <span>Pending payment</span>
+            </article>
+            <article class="stat-card accent-purple">
+              <p>Open quotations</p>
+              <h3 id="quotation-total">0</h3>
+              <span>Awaiting approval</span>
+            </article>
+          </div>
+
+          <div class="content-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Recent activity</h3>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Ref</th>
+                      <th>Customer</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-activity-body"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Revenue flow</h3>
+              </div>
+              <div class="chart-grid" id="monthly-chart"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="records-view">
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <input id="search-input" type="search" placeholder="Search customer or reference" />
+            </div>
+            <div class="toolbar-group inline">
+              <select id="type-filter">
+                <option value="all">All</option>
+                <option value="invoice">Invoices</option>
+                <option value="quotation">Quotations</option>
+                <option value="payment">Receipts</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-panel hidden" id="record-form-panel">
+            <form id="record-form">
+              <div class="form-grid">
+                <label>
+                  Type
+                  <select id="record-type" required>
+                    <option value="invoice">Invoice</option>
+                    <option value="quotation">Quotation</option>
+                    <option value="payment">Receipt</option>
+                  </select>
+                </label>
+                <label>
+                  Customer
+                  <input id="customer-name" type="text" placeholder="Customer name" required />
+                </label>
+                <label>
+                  Reference
+                  <input id="reference" type="text" placeholder="INV-1024" required />
+                </label>
+                <label>
+                  Amount
+                  <input id="amount" type="number" min="0" step="0.01" placeholder="0.00" required />
+                </label>
+                <label>
+                  Issue date
+                  <input id="issue-date" type="date" required />
+                </label>
+                <label>
+                  Due date
+                  <input id="due-date" type="date" />
+                </label>
+                <label class="full-width">
+                  Notes
+                  <textarea id="notes" rows="3" placeholder="Optional details"></textarea>
+                </label>
+                <label>
+                  Status
+                  <select id="record-status">
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Outstanding">Outstanding</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </label>
+                <label class="full-width">
+                  Attachments
+                  <input id="record-attachments" type="file" multiple />
+                  <small class="field-hint">Details are read from the first selected file. Review the fields before saving. Scanned PDFs need manual entry.</small>
+                </label>
+              </div>
+              <p id="attachment-status" class="form-message" role="status"></p>
+              <p id="form-message" class="form-message" role="status"></p>
+              <div class="button-row">
+                <button type="submit" class="primary-button">Save record</button>
+                <button type="button" class="secondary-button" id="cancel-record-form">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Billing records</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Reference</th>
+                    <th>Customer</th>
+                    <th>Issued</th>
+                    <th>Due</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Attachments</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="records-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="quotations-view">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Quotation pipeline</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Reference</th>
+                    <th>Customer</th>
+                    <th>Issued</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="quotations-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="payments-view">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Receipt register</h3>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Reference</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="activity-log-view">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Activity log</h3>
+              <button class="secondary-button" id="export-log-button" type="button">Export CSV</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date and time</th>
+                    <th>Action</th>
+                    <th>Reference</th>
+                    <th>Customer</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="activity-log-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
